@@ -9,6 +9,8 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            width: 100vw;
+            overflow-x: hidden;
         }
         .container {
             max-width: 800px;
@@ -56,10 +58,34 @@
         }
         .panic-gradient {
             background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,56,0,1) 12%, rgba(255,255,0,1) 28%, rgba(100,255,105,1) 50%, rgba(60,255,141,1) 58%, rgba(68,255,255,1) 77%, rgba(153,227,255,1) 84%, rgba(200,206,255,1) 90%, rgba(255,255,255,1) 100%);
+            position: relative;
+        }
+        .panic-gradient div {
+            text-align:center;
+            position: absolute;
+            font-size: 2em;
+            margin-left: -0.5em;
+            margin-top: -0.25em;
+            opacity: 0.3;
+            text-shadow: 0.03em 0.1em 0.01em rgba(0, 0, 0, 0.3);
+            transition: all 0.2s;
+            user-select: none;
+        }
+        .panic-gradient div:hover {
+            opacity: 1;
         }
         #result-band {
             width: 100vw;
-            height: 5em;
+            height: 10em;
+        }
+        #result-band-shadow {
+            width: 100%;
+            height: 100%;
+            top: 0.15em;
+            left: 0.035em;
+            background: rgba(0, 0, 0, 0.3);
+            margin: 0;
+            opacity: 1;
         }
     </style>
 </head>
@@ -111,9 +137,11 @@
             </div>
         </form>
     </div>
-    <div id='result-band' class='panic-gradient'></div>
+    <div id='result-band' class='panic-gradient'>
+        <div id='result-band-shadow' filter="url(#blurMe)"></div>
+    </div>
     <div>
-        <p>Explications</p>
+        <p>Note: La facilité matérielle relative n'est pas un classement du plus pauvre au plus riche dans une société donnée ! L'échelle est linéaire, dans une société très égalitaire tout le monde serait proche de la situation médiane fixé à 50%, le seuil de pauvreté quand à lui est fixé à 0% et ne devrait pas être franchi dans une société parfaitement fonctionnel puisque qu'on fixe se seuil de manière à lutter contre. Les chiffres 0% et 50% sont donc l'aspect relatif qui permet de situer instantanément sa proximité à ces situation de référence, il est donc possible d'être sous les 0% ou au dessus des 100% (voir très très très au dessus)</p>
     </div>
 
     <script>
@@ -139,10 +167,12 @@
             }
         }
             
-        for (const i of document.querySelectorAll('input[type=text]'))
+        const doc = document
+        for (const i of doc.querySelectorAll('input[type=text]'))
             i.title="Nombre ou formule. Exemple : 2 500 € / 3 + ($ 11 000 x 2 - 20%)"
 
-        const res_el = document.getElementById('resulta')
+        const byid = doc.getElementById.bind(doc)
+        const res_el = byid('resulta')
 
         const num = new Intl.NumberFormat()
         const eur = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' })
@@ -150,7 +180,7 @@
         function compute_FMR() {
 
             function read(s) {
-                const el = document.getElementById(s)
+                const el = byid(s)
                 const el_eq = el.nextElementSibling
                 el.style.background = ''
                 el_eq.textContent = ''
@@ -197,22 +227,37 @@
             }
         }
 
-        document.getElementById('simulator-form').addEventListener('submit', e => {e.preventDefault(); compute_FMR()})
+        byid('simulator-form').addEventListener('submit', e => {e.preventDefault(); compute_FMR()})
+
+        const emoji_list = [..."😱🥶🥵😷😩😔😌🙂😎😀😃🤤🧐🤑"]
 
         function draw_wave_panic_band(el) {
             let path_start = 'polygon(', path_end = ')'
             const phi = 1+Math.sqrt(5)
-            let w,x,y,yy
+            let w,x,y,yy,i,ip=-1
+            const n = emoji_list.length
             for (let x=0; x<95; x+=0.1) {
                 w = 0.0001*(100-x)**3
-                y = 0.1*(100-x)*(Math.abs(w % 2 - 1)+0.5*Math.abs(w % phi - phi*0.5))+0.01*x*(Math.sin(w*Math.PI)+1)+0.05*x | 0
+                y = 0.1*(100-x)*(Math.abs(w % 2 - 1)+0.5*Math.abs(w % phi - phi*0.5))+0.01*x*(Math.sin(w*Math.PI)+1)+0.15*(100-x) | 0
                 yy = 0.02*(100-x)*Math.abs(w % 20 - 10)
                 path_start += x+'% ' + (y+yy)+'%, '
                 path_end   = ', '+ x+'% ' + (80-y+yy)+'%' + path_end
+
+                i = n * x * 0.01 | 0
+                if (i != ip) {
+                    const emoji = doc.createElement('div')
+                    emoji.textContent = emoji_list[i]
+                    emoji.style.left = x + '%'
+                    emoji.style.top = (30+yy) + '%'
+                    el.appendChild(emoji)
+                }
+                ip = i
             }
-            el.style.clipPath = path_start + '100% ' + (y+yy) + '%, 100% ' + (80-y+yy)+'%' + path_end
+            path_start += '100% ' + (y+yy) + '%, 100% '
+            el.style.clipPath = path_start + (80-y+yy)+'%' + path_end
+            byid('result-band-shadow').style.clipPath = path_start + '0%, 0% 0%'
         }
-        draw_wave_panic_band(document.getElementById('result-band'))
+        draw_wave_panic_band(byid('result-band'))
     </script>
 </body>
 </html>
