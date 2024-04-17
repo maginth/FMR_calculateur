@@ -12,7 +12,7 @@
             width: 100vw;
             overflow-x: hidden;
         }
-        .container {
+        form {
             max-width: 800px;
             margin: 20px auto;
             padding: 20px;
@@ -87,6 +87,10 @@
             margin: 0;
             opacity: 1;
         }
+        .notes {
+            margin-left: 1.5em;
+            margin-right: 2em;
+        }
     </style>
 </head>
 <body>
@@ -140,8 +144,9 @@
     <div id='result-band' class='panic-gradient'>
         <div id='result-band-shadow' filter="url(#blurMe)"></div>
     </div>
-    <div>
-        <p>Note: La facilité matérielle relative n'est pas un classement du plus pauvre au plus riche dans une société donnée ! L'échelle est linéaire, dans une société très égalitaire tout le monde serait proche de la situation médiane fixé à 50%, le seuil de pauvreté quand à lui est fixé à 0% et ne devrait pas être franchi dans une société parfaitement fonctionnel puisque qu'on fixe se seuil de manière à lutter contre. Les chiffres 0% et 50% sont donc l'aspect relatif qui permet de situer instantanément sa proximité à ces situation de référence, il est donc possible d'être sous les 0% ou au dessus des 100% (voir très très très au dessus)</p>
+    <div class='notes'>
+        <p><strong>Note 1 :</strong> La facilité matérielle relative <strong>ne situe pas votre rang entre le plus pauvre et le plus riche dans une société donnée !</strong> L'idée est d'avoir une mesure proportionnelle à la valeurs des biens et services dont bénéficie une personne au delà de ses dépenses contraintes, définit pour tout le monde pour simplifier comme égale au seuil de pauvreté. Dans une société égalitaire tout le monde serait proche de la situation médiane fixé par construction à 50%🙂 (voir Note 2), le seuil de pauvreté quand à lui est fixé à 0%😩 et ne devrait pas être franchi dans une société parfaitement fonctionnelle, puisque ce seuil est choisi précisément comme un indicateur pour lutter contre des situations jugées inacceptables, car dans la majorité des cas elles réduisent significativement les oportunités de vie, sont synonyme de privations, et menacent la santé, l'épanouissement social, et de manière générale la dignitée des personnes concernées. La mesure est donc « relative » à ces seuils fixés à 0%😩 et 50%🙂 pour permettre de se situer instantanément par rapport à eux. Il est d'ailleurs possible d'être sous les 0%😱🥶🥵😷 ou au dessus des 100%🤤🧐🤑 (voir très très très au dessus pour les plus fortunés)</p>
+        <p><strong>Note 2 :</strong> La situation médiane est définie comme la situation d'une personne dans un couple avec deux enfants (renouvellement de la population) possédant le patrimoine médian des foyers dans la société considérée (ici par défaut la France), qui aurait des revenus médians, et dont il lui resterait encore à recevoir en héritage la moitié de l'héritage individuel médian reçu sur une vie (la première moitié étant supposée déjà reçu et inclus dans son patrimoine). Le seuil de pauvreté lui est fixé par les économistes, en France il est défini en générale comme 50% du revenu médian (la situation Française fait qu'à ce niveau de revenu les personnes ont en moyenne un très faible patrimoine, qui peut donc être ignoré, si ça n'était pas le cas il faudrait l'inclure de manière amortie dans un seuil de pauvreté étandu comme on le fait avec la situation médiane)</p>
     </div>
 
     <script>
