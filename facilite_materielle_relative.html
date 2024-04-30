@@ -60,32 +60,48 @@
             background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(255,56,0,1) 12%, rgba(255,255,0,1) 28%, rgba(100,255,105,1) 50%, rgba(60,255,141,1) 58%, rgba(68,255,255,1) 77%, rgba(153,227,255,1) 84%, rgba(200,206,255,1) 90%, rgba(255,255,255,1) 100%);
             position: relative;
         }
-        .panic-gradient div {
+        .result-emoji {
             text-align:center;
             position: absolute;
             font-size: 2em;
             margin-left: -0.5em;
-            margin-top: -0.25em;
+            margin-top: -0.5em;
             opacity: 0.3;
-            text-shadow: 0.03em 0.1em 0.01em rgba(0, 0, 0, 0.3);
+            text-shadow: 0.045em 0.1em 0.05em rgba(0, 0, 0, 0.3);
             transition: all 0.2s;
             user-select: none;
         }
-        .panic-gradient div:hover {
+        .result-emoji:hover, .result-emoji.highlight {
             opacity: 1;
         }
-        #result-band {
+        .result-emoji div {
+            font-size: 0.6em;
+            transform: rotate(15deg);
+        }
+        #result-band-wrapper {
             width: 100vw;
             height: 10em;
+            position: relative;
+        }
+        #result-band {
+            width: 100%;
+            height: 100%;
         }
         #result-band-shadow {
             width: 100%;
             height: 100%;
-            top: 0.15em;
-            left: 0.035em;
+            left: 0.09em;
+            top: 0.2em;
             background: rgba(0, 0, 0, 0.3);
             margin: 0;
             opacity: 1;
+            position: absolute;
+        }
+        #result-band-shadow-wrapper {
+            position: absolute;
+            height: 100%;
+            width: 100%;
+            filter: blur(0.05em);
         }
         .notes {
             margin-left: 1.5em;
@@ -141,11 +157,16 @@
             </div>
         </form>
     </div>
-    <div id='result-band' class='panic-gradient'>
-        <div id='result-band-shadow' filter="url(#blurMe)"></div>
+    <div id='result-band-wrapper'>
+        <div id='result-band' class='panic-gradient'>
+            <div id='result-band-shadow-wrapper'>
+                <div id='result-band-shadow'></div>
+            </div>
+            <div id='result-FMR-cursor' class='FMR-cursor'><div><div>37%</div></div></div>
+        </div>
     </div>
     <div class='notes'>
-        <p><strong>Note 1 :</strong> La facilité matérielle relative <strong>ne situe pas votre rang entre le plus pauvre et le plus riche dans une société donnée !</strong> L'idée est d'avoir une mesure proportionnelle à la valeurs des biens et services dont bénéficie une personne au delà de ses dépenses contraintes, définit pour tout le monde pour simplifier comme égale au seuil de pauvreté. Dans une société égalitaire tout le monde serait proche de la situation médiane fixé par construction à 50%🙂 (voir Note 2), le seuil de pauvreté quand à lui est fixé à 0%😩 et ne devrait pas être franchi dans une société parfaitement fonctionnelle, puisque ce seuil est choisi précisément comme un indicateur pour lutter contre des situations jugées inacceptables, car dans la majorité des cas elles réduisent significativement les oportunités de vie, sont synonyme de privations, et menacent la santé, l'épanouissement social, et de manière générale la dignitée des personnes concernées. La mesure est donc « relative » à ces seuils fixés à 0%😩 et 50%🙂 pour permettre de se situer instantanément par rapport à eux. Il est d'ailleurs possible d'être sous les 0%😱🥶🥵😷 ou au dessus des 100%🤤🧐🤑 (voir très très très au dessus pour les plus fortunés)</p>
+        <p><strong>Note 1 :</strong> La facilité matérielle relative <strong>ne situe pas votre rang entre le plus pauvre et le plus riche dans une société donnée !</strong> L'idée est d'avoir une mesure proportionnelle à la valeurs des biens et services dont bénéficie une personne au delà de ses dépenses contraintes, définit pour tout le monde pour simplifier comme égales au seuil de pauvreté. Dans une société égalitaire tout le monde serait proche de la situation médiane fixé par construction à 50%🙂 (voir Note 2), le seuil de pauvreté quand à lui est fixé à 0%😩 et ne devrait pas être franchi dans une société parfaitement fonctionnelle, puisque ce seuil est choisi précisément comme un indicateur pour lutter contre des situations jugées inacceptables, car dans la majorité des cas elles réduisent significativement les oportunités de vie, sont synonyme de privations, et menacent la santé, l'épanouissement social, et de manière générale la dignitée des personnes concernées. La mesure est donc « relative » à ces seuils fixés à 0%😩 et 50%🙂 pour permettre de se situer instantanément par rapport à eux. Il est d'ailleurs possible d'être sous les 0%😱🥶🥵😷 ou au dessus des 100%🤤🧐🤑 (voir très très très au dessus pour les plus fortunés)</p>
         <p><strong>Note 2 :</strong> La situation médiane est définie comme la situation d'une personne dans un couple avec deux enfants (renouvellement de la population) possédant le patrimoine médian des foyers dans la société considérée (ici par défaut la France), qui aurait des revenus médians, et dont il lui resterait encore à recevoir en héritage la moitié de l'héritage individuel médian reçu sur une vie (la première moitié étant supposée déjà reçu et inclus dans son patrimoine). Le seuil de pauvreté lui est fixé par les économistes, en France il est défini en générale comme 50% du revenu médian (la situation Française fait qu'à ce niveau de revenu les personnes ont en moyenne un très faible patrimoine, qui peut donc être ignoré, si ça n'était pas le cas il faudrait l'inclure de manière amortie dans un seuil de pauvreté étandu comme on le fait avec la situation médiane)</p>
     </div>
 
@@ -225,7 +246,12 @@
                 const facilite_materielle = (patrimoine / parts + heritage) / amortissement + revenus / parts - seuil_pauvrete
                 const facilite_materielle_med = (patrimoine_med / 3 + heritage_med /2) / amortissement + revenus_med - seuil_pauvrete
 
-                res_el.innerHTML = Math.round(50 * facilite_materielle / facilite_materielle_med) + '%'
+                const FMR = Math.round(50 * facilite_materielle / facilite_materielle_med)
+                res_el.innerHTML = FMR + '%'
+                highlighted_emoji.classList.remove('highlight')
+                const l = emoji_list.length-1
+                highlighted_emoji = emoji_elements[Math.round(Math.max(0, Math.min(l, (0.2 + FMR / 100 * 0.6) * l)))]
+                highlighted_emoji.classList.add('highlight')
             } catch(e) {
                 if (e != 'loading')
                     res_el.innerHTML = "erreur"
@@ -234,24 +260,32 @@
 
         byid('simulator-form').addEventListener('submit', e => {e.preventDefault(); compute_FMR()})
 
-        const emoji_list = [..."😱🥶🥵😷😩😔😌🙂😎😀😃🤤🧐🤑"]
+        const emoji_list = [..."😱🥶🥵😷😩😑😔😌🙂😎😀😃😄🤤🤗🧐🤑"]
+        let highlighted_emoji = doc.body
+        const emoji_elements = []
 
         function draw_wave_panic_band(el) {
-            let path_start = 'polygon(', path_end = ')'
+            let path_start = 'polygon(', path_end = ''
             const phi = 1+Math.sqrt(5)
             let w,x,y,yy,i,ip=-1
             const n = emoji_list.length
-            for (let x=0; x<95; x+=0.1) {
+            const square_sin = (w, square) => square*(Math.abs(w % 2 - 1))+(1-square)*0.5*(1+Math.cos(w*Math.PI))
+            for (let x=0; x<100; x+=0.05) {
                 w = 0.0001*(100-x)**3
-                y = 0.1*(100-x)*(Math.abs(w % 2 - 1)+0.5*Math.abs(w % phi - phi*0.5))+0.01*x*(Math.sin(w*Math.PI)+1)+0.15*(100-x) | 0
-                yy = 0.02*(100-x)*Math.abs(w % 20 - 10)
+                // y = 0.1*(100-x)*(Math.abs(w % 2 - 1)+0.5*Math.abs(w % phi - phi*0.5))+0.01*x*(Math.sin(w*Math.PI)+1)+0.15*(100-x)
+                // yy = 0.02*(100-x)*Math.abs(w % 20 - 10)
+                const square = (1-x*0.01)
+                y = 0.1*(100-x)*(square_sin(w, square)+0.5*phi/2*square_sin(w/phi*2, square))+0.15*(100-x)
+                yy = 0.2*(100-x)*square_sin(w/10, square)
                 path_start += x+'% ' + (y+yy)+'%, '
                 path_end   = ', '+ x+'% ' + (80-y+yy)+'%' + path_end
 
-                i = n * x * 0.01 | 0
+                i = Math.round(n * x * 0.01 - 0.95)
                 if (i != ip) {
                     const emoji = doc.createElement('div')
-                    emoji.textContent = emoji_list[i]
+                    emoji.classList.add('result-emoji')
+                    emoji_elements.push(emoji)
+                    emoji.innerHTML = emoji_list[i]+'<div>'+(Math.round((x-20) / 6) *10)+'%<div>'
                     emoji.style.left = x + '%'
                     emoji.style.top = (30+yy) + '%'
                     el.appendChild(emoji)
@@ -259,8 +293,9 @@
                 ip = i
             }
             path_start += '100% ' + (y+yy) + '%, 100% '
-            el.style.clipPath = path_start + (80-y+yy)+'%' + path_end
-            byid('result-band-shadow').style.clipPath = path_start + '0%, 0% 0%'
+            const path = path_start + (80-y+yy)+'%' + path_end
+            el.style.clipPath = path + ')'
+            byid('result-band-shadow').style.clipPath = path + ', 0% 100%, 100% 100%, 100% 0%, 0% 0%)'
         }
         draw_wave_panic_band(byid('result-band'))
     </script>
